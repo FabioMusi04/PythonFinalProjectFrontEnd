@@ -1,15 +1,35 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
+import axiosInstance from '../axios';
+import { useNavigate } from 'react-router-dom';
 
-function LoginForm() {
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
+function LoginForm( { user } ) {
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        if (user) {
+            navigate('/');
+        }
+    }, [user, navigate]);
+
+    const [email, setEmail] = useState('user@example.com');
+    const [password, setPassword] = useState('password');
     const [showPassword, setShowPassword] = useState(false);
 
     const handleSubmit = (e) => {
         e.preventDefault();
         console.log('Email:', email);
         console.log('Password:', password);
+
+        axiosInstance.post('/login', { email, password })
+            .then((response) => {
+                console.log(response.data);
+                localStorage.setItem('token', response.data.access_token);
+                localStorage.setItem('user', JSON.stringify(response.data.user));
+            })
+            .catch((error) => {
+                console.error(error);
+            });
     };
 
     const togglePasswordVisibility = () => {
