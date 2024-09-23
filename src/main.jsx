@@ -10,29 +10,36 @@ import Home from './pages/Home';
 import Register from './components/Register';
 import Navbar from './components/Navbar';
 import Login from './components/Login';
+import Account from './pages/Account';
 
 const Dashboard = () => <h2>Dashboard</h2>;
 
 const App = () => {
-
-    const [user, setUser] = React.useState(null);
+    const [user, setUser] = React.useState(JSON.parse(localStorage.getItem('user')) || null);
 
     useEffect(() => {
-        const user = localStorage.getItem('user');
+        console.log('User:', user);
         if (user) {
-            setUser(JSON.parse(user));
+            localStorage.setItem('user', JSON.stringify(user));
+        } else {
+            localStorage.removeItem('user');
         }
-    }, []);
+    }, [user]);
 
 
     return (
         <div className="flex flex-col w-full h-screen">
-            <Navbar />
+            <Navbar user={user} setUser={setUser} />
             <Router>
                 <Routes>
-                    <Route path="/login" element={<Login user={user} />} />
-                    <Route path="/register" element={<Register uxser={user} />} />
-                    <Route path="/" element={<Home user={user} />}
+                    <Route path="/login" element={<Login user={user} setUser={setUser} />} />
+                    <Route path="/register" element={<Register  user={user} setUser={setUser} />} />
+                    <Route path="/" element={<Home user={user}/>} />
+                    <Route path="/account" element={
+                        <PrivateRoute user={user}>
+                            <Account  user={user} setUser={setUser} />
+                        </PrivateRoute>
+                    }
                     />
                     <Route
                         path="/dashboard"
@@ -41,7 +48,8 @@ const App = () => {
                                 <Dashboard />
                             </PrivateRoute>
                         }
-                    />
+                    />  
+                
                     <Route path="/404" element={<NotFound />} />
                     <Route path="*" element={<Navigate to="/404" />} />
                 </Routes>

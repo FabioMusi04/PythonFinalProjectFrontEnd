@@ -3,7 +3,7 @@ import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import axiosInstance from '../axios';
 import { useNavigate } from 'react-router-dom';
 
-function LoginForm( { user } ) {
+function LoginForm( { user, setUser } ) {
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -24,8 +24,12 @@ function LoginForm( { user } ) {
         axiosInstance.post('/login', { email, password })
             .then((response) => {
                 console.log(response.data);
-                localStorage.setItem('token', response.data.access_token);
+                localStorage.setItem('token', JSON.stringify(response.data.token));
                 localStorage.setItem('user', JSON.stringify(response.data.user));
+
+                setUser(response.data.user);
+    
+                navigate('/');
             })
             .catch((error) => {
                 console.error(error);
