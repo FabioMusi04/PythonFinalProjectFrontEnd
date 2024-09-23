@@ -11,6 +11,8 @@ import Register from './components/Register';
 import Navbar from './components/Navbar';
 import Login from './components/Login';
 import Account from './pages/Account';
+import ProductCrud from './pages/ProductCrud';
+import Restaurants from './pages/Restaurants';
 
 const Dashboard = () => <h2>Dashboard</h2>;
 
@@ -18,7 +20,6 @@ const App = () => {
     const [user, setUser] = React.useState(JSON.parse(localStorage.getItem('user')) || null);
 
     useEffect(() => {
-        console.log('User:', user);
         if (user) {
             localStorage.setItem('user', JSON.stringify(user));
         } else {
@@ -42,14 +43,21 @@ const App = () => {
                     }
                     />
                     <Route
-                        path="/dashboard"
+                        path="/productDashboard"
                         element={
-                            <PrivateRoute user={user} roles={["owner", "admin"]}>
-                                <Dashboard />
+                            <PrivateRoute user={user} roles={["owner", "admin", "user"]}>
+                                <ProductCrud />
                             </PrivateRoute>
                         }
                     />  
-                
+                    <Route
+                        path="/restaurants/me"
+                        element={
+                            <PrivateRoute user={user} roles={["owner"]}>
+                                <Restaurants />
+                            </PrivateRoute>
+                        }
+                    />
                     <Route path="/404" element={<NotFound />} />
                     <Route path="*" element={<Navigate to="/404" />} />
                 </Routes>

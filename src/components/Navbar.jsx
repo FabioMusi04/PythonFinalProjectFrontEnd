@@ -27,14 +27,21 @@ const Navbar = ({ user, setUser }) => {
           </a>
           {user ? (
             <>
-            <a href="/account" className="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded">
-              Account
-            </a>
-            <img className="h-10 w-10 rounded-full" src={user.profile_picture || 'https://placehold.co/600x400' } alt="avatar" />
-            <button onClick={logout} className="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded">
-              Logout
-            </button>
+              <a href="/account" className="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded">
+                Account
+              </a>
+              <img className="h-10 w-10 rounded-full" src={user.profile_picture || 'https://placehold.co/600x400'} alt="avatar" />
+              <button onClick={logout} className="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded">
+                Logout
+              </button>
+              {
+                user.role === 'owner' ? (
+                  <a href="/restaurants/me" className="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded">
+                    Restaurants
+                  </a>
+                ) : null}
             </>
+
           ) : (
             <a href="/login" className="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded">
               Login

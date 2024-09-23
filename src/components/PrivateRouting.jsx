@@ -6,7 +6,7 @@ const isAuthenticated = (user, roles) => {
     const roleIsValid = roles ? roles.includes(user.role) : true;
 
     const isTokenExpired = new Date(JSON.parse(localStorage.getItem('token')).expires_in) * 1000 <= Date.now();
-
+    
     return tokenExists && userExists && roleIsValid && !isTokenExpired;
 };
 
