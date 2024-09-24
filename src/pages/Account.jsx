@@ -1,9 +1,23 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
+import PropTypes from 'prop-types';
 import Loading from '../components/Loading';
 import axiosIstance from '../axios/index';
 import { useNavigate } from 'react-router-dom';
 
 const Account = ({ user }) => {
+
+Account.propTypes = {
+    user: PropTypes.shape({
+        name: PropTypes.string,
+        surname: PropTypes.string,
+        email: PropTypes.string,
+        date_of_birth: PropTypes.string,
+        phone_number: PropTypes.string,
+        address: PropTypes.string,
+        profile_picture: PropTypes.string,
+        id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    }),
+};
     const navigate = useNavigate();
 
     const [editMode, setEditMode] = useState(false);

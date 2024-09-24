@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 
 function Register() {
@@ -28,7 +28,7 @@ function Register() {
 
     return (
         <div className="relative grow justify-center bg-gray-50 dark:bg-gray-900 py-6 sm:py-12 px-6">
-            <div className="relative bg-white dark:bg-gray-800 px-6 pt-10 pb-8 shadow-xl ring-1 ring-gray-900/5 sm:mx-auto sm:max-w-3xl sm:rounded-lg sm:px-10 rounded-lg shadow-lg p-8">
+            <div className="relative bg-white dark:bg-gray-800 px-6 pt-10 pb-8 shadow-xl ring-1 ring-gray-900/5 sm:mx-auto sm:max-w-3xl sm:rounded-lg sm:px-10 rounded-lg p-8">
                 <h2 className="text-2xl font-bold mb-6 text-gray-900 dark:text-gray-100 text-center">Register</h2>
                 <form onSubmit={handleSubmit}>
                     <div className="mb-4">

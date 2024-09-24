@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import  { useEffect, useState } from 'react';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import axiosInstance from '../axios';
 import { useNavigate } from 'react-router-dom';
+import PropTypes from 'prop-types';
 
 function LoginForm( { user, setUser } ) {
     const navigate = useNavigate();
@@ -42,7 +43,7 @@ function LoginForm( { user, setUser } ) {
 
     return (
         <div className="relative grow justify-center bg-gray-50 dark:bg-gray-900 py-6 sm:py-12 px-6">
-            <div className="relative bg-white dark:bg-gray-800 px-6 pt-10 pb-8 shadow-xl ring-1 ring-gray-900/5 sm:mx-auto sm:max-w-3xl sm:rounded-lg sm:px-10 rounded-lg shadow-lg p-8">
+            <div className="relative bg-white dark:bg-gray-800 px-6 pt-10 pb-8 shadow-xl ring-1 ring-gray-900/5 sm:mx-auto sm:max-w-3xl sm:rounded-lg sm:px-10 rounded-lg p-8">
                 <h2 className="text-2xl font-bold mb-6 text-gray-900 dark:text-gray-100 text-center">Login</h2>
                 <form onSubmit={handleSubmit} className="dark:text-gray-300 text-black-300">
                     <div className="mb-4">
@@ -91,5 +92,10 @@ function LoginForm( { user, setUser } ) {
         </div>
     );
 }
+
+LoginForm.propTypes = {
+    user: PropTypes.object,
+    setUser: PropTypes.func.isRequired,
+};
 
 export default LoginForm;

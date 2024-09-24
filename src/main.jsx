@@ -14,8 +14,6 @@ import Account from './pages/Account';
 import ProductCrud from './pages/ProductCrud';
 import Restaurants from './pages/Restaurants';
 
-const Dashboard = () => <h2>Dashboard</h2>;
-
 const App = () => {
     const [user, setUser] = React.useState(JSON.parse(localStorage.getItem('user')) || null);
 

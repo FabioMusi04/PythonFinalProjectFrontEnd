@@ -1,5 +1,6 @@
 import DarkModeToggle from './DarkMode';
-import React, { useEffect, useState } from 'react';
+import { useState } from 'react';
+import PropTypes from 'prop-types';
 
 const Navbar = ({ user, setUser }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -74,6 +75,13 @@ const Navbar = ({ user, setUser }) => {
       )}
     </nav>
   );
+};
+Navbar.propTypes = {
+  user: PropTypes.shape({
+    profile_picture: PropTypes.string,
+    role: PropTypes.string,
+  }),
+  setUser: PropTypes.func.isRequired,
 };
 
 export default Navbar;

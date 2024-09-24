@@ -1,5 +1,3 @@
-import React from 'react';
-
 const Home = () => {
     return (
         <div className="relative grow justify-center bg-gray-50 dark:bg-gray-900 py-6 sm:py-12">

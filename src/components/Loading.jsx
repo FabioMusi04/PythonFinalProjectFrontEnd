@@ -1,5 +1,3 @@
-import React from 'react';
-
 const Loading = () => {
     return (
         <div className="grow flex items-center justify-center bg-gray-100 dark:bg-gray-900">
