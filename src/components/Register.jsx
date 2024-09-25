@@ -39,7 +39,9 @@ function Register() {
 
         axiosInstance.post('/register', { email, password })
             .then((response) => {
-                console.log(response);
+                if (response.status <= 201 && response.status >= 300) {
+                    throw new Error(response.detail);
+                }
                 setAlert(
                     {
                         type: 'success',

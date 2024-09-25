@@ -20,8 +20,8 @@ function LoginForm( { user, setUser } ) {
         axiosInstance.post('/login', { email, password })
             .then((response) => {
                 console.log(response);
-                if (response.data.user === undefined) {
-                    throw new Error(response.data.detail);
+                if (response.status <= 201 && response.status >= 300) {
+                    throw new Error(response.detail);
                 }
 
                 localStorage.setItem('token', JSON.stringify(response.data.token));
@@ -39,11 +39,11 @@ function LoginForm( { user, setUser } ) {
                     }
                 );
             })
-            .catch((error) => {    
+            .catch((error) => { 
                 setAlert(
                     {
                         type: 'error',
-                        message: error.message,
+                        message: error.response.data.detail || error.message,
                         onClose: () => {
                             setAlert({ type: '', message: '', onClose: () => {} });
                             setEmail('');
