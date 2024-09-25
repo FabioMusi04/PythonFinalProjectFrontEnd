@@ -6,17 +6,10 @@ const RestaurantCreation = ({ isOpen, setIsOpen }) => {
     };
 
     return (
-        <div className="flex justify-center items-center h-screen bg-gray-100 dark:bg-gray-900">
-            <button
-                onClick={toggleModal}
-                className="bg-blue-500 text-white px-4 py-2 rounded"
-            >
-                Create Restaurant
-            </button>
-
+        <div className="flex justify-center items-center bg-gray-100 dark:bg-gray-900">
             {isOpen && (
                 <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex justify-center items-center">
-                    <div className="bg-white dark:bg-gray-800 p-6 rounded shadow-lg w-2/3">
+                    <div className="bg-white dark:bg-gray-800 p-6 rounded shadow-lg m-3">
                         <h2 className="text-2xl mb-4 text-gray-900 dark:text-gray-100">Create Restaurant</h2>
                         <form>
                             <div className="grid grid-cols-2 gap-4">
