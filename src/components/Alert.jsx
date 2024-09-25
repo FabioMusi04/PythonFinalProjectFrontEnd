@@ -23,9 +23,9 @@ const Alert = ({ type, message, onClose }) => {
   }, [type, message, onClose]);
 
   return (
-    <>
+    <div className="flex justify-center items-center">
       {type !== "" && message !== "" && (
-        <div className={`border-l-4 p-4 ${alertType[type]}`} role="alert">
+        <div className={`border-l-4 p-4 ${alertType[type]} rounded mb-5 w-full max-w-md`} role="alert">
           <div className="flex justify-between items-center">
             <div>
               <p className="font-bold">
@@ -39,7 +39,7 @@ const Alert = ({ type, message, onClose }) => {
           </div>
         </div>
       )}
-    </>
+    </div>
   );
 };
 Alert.propTypes = {
