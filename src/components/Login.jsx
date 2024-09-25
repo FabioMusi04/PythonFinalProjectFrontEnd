@@ -3,18 +3,13 @@ import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import axiosInstance from '../axios';
 import { useNavigate } from 'react-router-dom';
 import PropTypes from 'prop-types';
+import Alert from './Alert';
 
 function LoginForm( { user, setUser } ) {
     const navigate = useNavigate();
 
-    useEffect(() => {
-        if (user) {
-            navigate('/');
-        }
-    }, [user, navigate]);
-
-    const [email, setEmail] = useState('user@example.com');
-    const [password, setPassword] = useState('password');
+    const [email, setEmail] = useState('owner@example.com');
+    const [password, setPassword] = useState('ownerpassword');
     const [showPassword, setShowPassword] = useState(false);
 
     const handleSubmit = (e) => {
@@ -24,16 +19,38 @@ function LoginForm( { user, setUser } ) {
 
         axiosInstance.post('/login', { email, password })
             .then((response) => {
-                console.log(response.data);
+                console.log(response);
+                if (response.data.user === undefined) {
+                    throw new Error(response.data.detail);
+                }
+
                 localStorage.setItem('token', JSON.stringify(response.data.token));
                 localStorage.setItem('user', JSON.stringify(response.data.user));
 
                 setUser(response.data.user);
-    
-                navigate('/');
+
+                setAlert(
+                    {
+                        type: 'success',
+                        message: 'Login successful',
+                        onClose: () => {
+                            navigate('/');
+                        }
+                    }
+                );
             })
-            .catch((error) => {
-                console.error(error);
+            .catch((error) => {    
+                setAlert(
+                    {
+                        type: 'error',
+                        message: error.message,
+                        onClose: () => {
+                            setAlert({ type: '', message: '', onClose: () => {} });
+                            setEmail('');
+                            setPassword('');
+                        }
+                    }
+                );
             });
     };
 
@@ -41,8 +58,15 @@ function LoginForm( { user, setUser } ) {
         setShowPassword(!showPassword);
     };
 
+    const [alert, setAlert] = useState({
+        type: '',
+        message: '',
+        onClose: () => {},
+    });
+
     return (
         <div className="relative grow justify-center bg-gray-50 dark:bg-gray-900 py-6 sm:py-12 px-6">
+            <Alert type={alert.type} message={alert.message} onClose={alert.onClose} />
             <div className="relative bg-white dark:bg-gray-800 px-6 pt-10 pb-8 shadow-xl ring-1 ring-gray-900/5 sm:mx-auto sm:max-w-3xl sm:rounded-lg sm:px-10 rounded-lg p-8">
                 <h2 className="text-2xl font-bold mb-6 text-gray-900 dark:text-gray-100 text-center">Login</h2>
                 <form onSubmit={handleSubmit} className="dark:text-gray-300 text-black-300">
@@ -87,6 +111,9 @@ function LoginForm( { user, setUser } ) {
                     >
                         Log In
                     </button>
+                    <div className="text-end mt-4">
+                        <a href="/register" className="text-indigo-600 hover:underline">You don't have an account? Register HERE</a>
+                    </div>
                 </form>
             </div>
         </div>
