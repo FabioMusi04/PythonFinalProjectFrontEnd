@@ -3,6 +3,7 @@ import axiosInstance from "../axios";
 import Loading from "./Loading";
 
 import RestaurantPage from "./RestaurantPage";
+import RestaurantCreation from "./RestaurantCreation";
 
 const RestaurantList = () => {
   const [restaurants, setRestaurants] = useState([]);
@@ -12,6 +13,8 @@ const RestaurantList = () => {
     componentId: 1,
     restaurantId: 0,
   });
+  const [isOpenModal, setIsOpenModal] = useState(false);
+
 
   useEffect(() => {
     const fetchRestaurants = async () => {
@@ -31,7 +34,6 @@ const RestaurantList = () => {
   }, []);
 
   const showRestaurantPage = (restaurantId) => () => {
-    console.log("showRestaurantPage", restaurantId);
     setSelectedComponent({
       componentId: 2,
       restaurantId,
@@ -49,7 +51,7 @@ const RestaurantList = () => {
   return selectedComponent.componentId === 1 ? (
     <>
       <div className="flex justify-center mb-6">
-        <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+        <button onClick={() => setIsOpenModal(true)} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
           Add Restaurant
         </button>
       </div>
@@ -81,6 +83,7 @@ const RestaurantList = () => {
             </div>
           ))}
         </div>
+        <RestaurantCreation setIsOpen={setIsOpenModal} isOpen={isOpenModal} />
       </div>
     </>
   ) : selectedComponent.componentId === 2 ? (
