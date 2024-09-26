@@ -21,7 +21,7 @@ function LoginForm( { user, setUser } ) {
         e.preventDefault();
         console.log('Email:', email);
         console.log('Password:', password);
-
+        console.log(axiosInstance.defaults.baseURL);
         axiosInstance.post('/login', { email, password })
             .then((response) => {
                 console.log(response.data);
