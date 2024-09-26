@@ -63,7 +63,7 @@ Account.propTypes = {
         setAccount(formData);
         setEditMode(false);
 
-        axiosIstance.put(`/users/${user.id}`, formData)
+        axiosIstance.put(`/users/me`, formData)
             .then((response) => {
                 console.log(response.data);
             })
@@ -169,7 +169,7 @@ Account.propTypes = {
                         {editMode ? (
                             <input
                                 type="text"
-                                name="location"
+                                name="address"
                                 value={formData.address}
                                 onChange={handleChange}
                                 className="mt-1 block w-full p-2 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-gray-300"
