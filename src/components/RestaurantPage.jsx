@@ -42,9 +42,9 @@ const RestaurantPage = ({ id }) => {
   });
 
   const handleSave = () => {
-    setRestaurant(formData);
     setEditMode(false);
     console.log(formData);
+
     axiosInstance
       .put(`/restaurants/${id}`, formData)
       .then((response) => {
@@ -261,7 +261,7 @@ const RestaurantPage = ({ id }) => {
                 />
               ) : (
                 <p className="mt-1 text-lg text-gray-800 dark:text-gray-300">
-                  {restaurant.city || ""}
+                  {restaurant.city || "-"}
                 </p>
               )}
             </div>
@@ -279,7 +279,7 @@ const RestaurantPage = ({ id }) => {
                 />
               ) : (
                 <p className="mt-1 text-lg text-gray-800 dark:text-gray-300">
-                  {restaurant.country || ""}
+                  {restaurant.country || "-"}
                 </p>
               )}
             </div>
@@ -297,7 +297,7 @@ const RestaurantPage = ({ id }) => {
                 />
               ) : (
                 <p className="mt-1 text-lg text-gray-800 dark:text-gray-300">
-                  {restaurant.postal_code || ""}
+                  {restaurant.postal_code || "-"}
                 </p>
               )}
             </div>
