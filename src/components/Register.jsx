@@ -1,21 +1,79 @@
 import { useState } from 'react';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
+import Alert from './Alert';
+import axiosInstance from '../axios';
+import { useNavigate } from 'react-router-dom';
 
 function Register() {
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [confirmPassword, setConfirmPassword] = useState('');
+    const navigate = useNavigate();
+    const [email, setEmail] = useState('example@example.com');
+    const [password, setPassword] = useState('examplepassword');
+    const [confirmPassword, setConfirmPassword] = useState('examplepassword');
+    const [name, setName] = useState('John');
+    const [surname, setSurname] = useState('Doe');
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
+    const [alert, setAlert] = useState({
+        type: '',
+        message: '',
+        onClose: () => { }
+    });
 
     const handleSubmit = (e) => {
         e.preventDefault();
         if (password !== confirmPassword) {
-            alert('Passwords do not match');
+            setAlert(
+                {
+                    type: 'error',
+                    message: 'Passwords do not match',
+                    onClose: () => {
+                        setAlert({ type: '', message: '', onClose: () => { } });
+                        setPassword('');
+                        setConfirmPassword('');
+                    }
+                }
+            );
             return;
         }
         console.log('Email:', email);
         console.log('Password:', password);
+        console.log('Confirm Password:', confirmPassword);
+        console.log('Name:', name);
+        console.log('Surname:', surname);
+
+
+        axiosInstance.post('/register', { email, password, name, surname, confirm_password: confirmPassword })
+            .then((response) => {
+                if (response.status <= 201 && response.status >= 300) {
+                    throw new Error(response.detail);
+                }
+                setAlert(
+                    {
+                        type: 'success',
+                        message: 'Registration successful',
+                        onClose: () => {
+                            navigate('/login');
+                        }
+                    }
+                );
+            })
+            .catch((error) => {
+                setAlert(
+                    {
+                        type: 'error',
+                        message: error.response.data.detail,
+                        onClose: () => {
+                            setAlert({ type: '', message: '', onClose: () => { } });
+                            setEmail('');
+                            setPassword('');
+                            setConfirmPassword('');
+                            setName('');
+                            setSurname('');
+                        }
+                    }
+                );
+            });
     };
 
     const togglePasswordVisibility = () => {
@@ -28,9 +86,36 @@ function Register() {
 
     return (
         <div className="relative grow justify-center bg-gray-50 dark:bg-gray-900 py-6 sm:py-12 px-6">
+            <Alert type={alert.type} message={alert.message} onClose={alert.onClose} />
             <div className="relative bg-white dark:bg-gray-800 px-6 pt-10 pb-8 shadow-xl ring-1 ring-gray-900/5 sm:mx-auto sm:max-w-3xl sm:rounded-lg sm:px-10 rounded-lg p-8">
                 <h2 className="text-2xl font-bold mb-6 text-gray-900 dark:text-gray-100 text-center">Register</h2>
-                <form onSubmit={handleSubmit}>
+                <form onSubmit={handleSubmit}  className="dark:text-gray-300 text-black-300">
+                <div className="mb-4">
+                        <label className="block text-gray-700 dark:text-gray-300 mb-2" htmlFor="email">
+                            Name
+                        </label>
+                        <input
+                            type="text"
+                            id="name"
+                            value={name}
+                            onChange={(e) => setEmail(e.target.value)}
+                            required
+                            className="w-full px-4 py-2 rounded-lg border dark:bg-gray-700 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400"
+                        />
+                    </div>
+                    <div className="mb-4">
+                        <label className="block text-gray-700 dark:text-gray-300 mb-2" htmlFor="email">
+                            Surname
+                        </label>
+                        <input
+                            type="text"
+                            id="surname"
+                            value={surname}
+                            onChange={(e) => setEmail(e.target.value)}
+                            required
+                            className="w-full px-4 py-2 rounded-lg border dark:bg-gray-700 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400"
+                        />
+                    </div>
                     <div className="mb-4">
                         <label className="block text-gray-700 dark:text-gray-300 mb-2" htmlFor="email">
                             Email
@@ -94,6 +179,9 @@ function Register() {
                     >
                         Register
                     </button>
+                    <div className="text-end mt-4">
+                        <a href="/login" className="text-indigo-600 hover:underline">You already have an account? Login HERE</a>
+                    </div>
                 </form>
             </div>
         </div>
