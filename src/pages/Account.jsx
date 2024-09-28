@@ -63,11 +63,18 @@ const Account = ({ user, setUser }) => {
   };
 
   const handleSave = () => {
-    setAccount(formData);
     setEditMode(false);
+    const diff = Object.keys(formData).reduce((acc, key) => {
+      if (formData[key] !== account[key]) {
+        acc[key] = formData[key];
+      }
+      return acc;
+    }, {});
+
+    console.log(diff);
 
     axiosIstance
-      .put(`/users/me`, formData)
+      .put(`/users/me`, diff)
       .then((response) => {
         setAccount(response.data);
         setUser(response.data);
