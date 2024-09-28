@@ -15,7 +15,7 @@ const Account = ({ user, setUser }) => {
         PropTypes.instanceOf(Date),
         PropTypes.string,
       ]),
-      phone_number: PropTypes.number,
+      phone_number: PropTypes.string,
       address: PropTypes.string,
       profile_picture: PropTypes.string,
       id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
@@ -44,7 +44,7 @@ const Account = ({ user, setUser }) => {
             surname: user.surname || "",
             email: user.email || "",
             date_of_birth: user.date_of_birth ? user.date_of_birth : "",
-            phone_number: user.phone_number || "",
+            phone_number: user.phone_number ? String(user.phone_number) : "",
             address: user.address || "",
             profile_picture:
               user.profile_picture || "https://placehold.co/600x400",
@@ -72,10 +72,19 @@ const Account = ({ user, setUser }) => {
     }, {});
 
     console.log(diff);
+    if (Object.keys(diff).length === 0) {
+      setAlert({
+        message: "No changes detected",
+        type: "info",
+        onClose: () => setAlert({ message: "", type: "", onClose: () => {} }),
+      });
+      return;
+    }
 
     axiosIstance
       .put(`/users/me`, diff)
       .then((response) => {
+        console.log(response);
         setAccount(response.data);
         setUser(response.data);
         setAlert({
@@ -83,8 +92,10 @@ const Account = ({ user, setUser }) => {
           type: "success",
           onClose: () => setAlert({ message: "", type: "", onClose: () => {} }),
         });
+        setFormData(response.data);
       })
       .catch((error) => {
+        console.log(error);
         if (error.status === 403) {
           setAlert({
             message: "You are not authorized to perform this action",
@@ -99,6 +110,7 @@ const Account = ({ user, setUser }) => {
           type: "error",
           onClose: () => setAlert({ message: "", type: "", onClose: () => {} }),
         });
+        setFormData(account);
       });
   };
 
@@ -181,7 +193,7 @@ const Account = ({ user, setUser }) => {
               </label>
               {editMode ? (
                 <input
-                  type="number"
+                  type="text"
                   name="phone_number"
                   value={formData.phone_number}
                   onChange={handleChange}

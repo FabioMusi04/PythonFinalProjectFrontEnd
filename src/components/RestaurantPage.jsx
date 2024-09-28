@@ -181,7 +181,7 @@ const RestaurantPage = ({ id }) => {
               </label>
               {editMode ? (
                 <input
-                  type="number"
+                  type="text"
                   name="phone_number"
                   value={formData.phone_number || ""}
                   onChange={handleChange}
