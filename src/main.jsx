@@ -35,7 +35,7 @@ const App = () => {
                     <Route path="/register" element={<Register  user={user} setUser={setUser} />} />
                     <Route path="/" element={<Home user={user}/>} />
                     <Route path="/account" element={
-                        <PrivateRoute user={user}>
+                        <PrivateRoute user={user} roles={["owner", "admin", "user"]}>
                             <Account  user={user} setUser={setUser} />
                         </PrivateRoute>
                     }
@@ -51,7 +51,7 @@ const App = () => {
                     <Route
                         path="/restaurants/me"
                         element={
-                            <PrivateRoute user={user} roles={["owner"]}>
+                            <PrivateRoute user={user} roles={["owner", "admin"]}>
                                 <Restaurants />
                             </PrivateRoute>
                         }
