@@ -5,7 +5,7 @@ import { createRoot } from 'react-dom/client';
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 
 import PrivateRoute from './components/PrivateRouting';
-import NotFound from './components/NotFound';
+import NotFound from './pages/NotFound';
 import Home from './pages/Home';
 import Register from './components/Register';
 import Navbar from './components/Navbar';
