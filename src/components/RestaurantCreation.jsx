@@ -16,7 +16,7 @@ const RestaurantCreation = ({ isOpen, setIsOpen }) => {
 
   const [formData, setFormData] = useState({
     name: "",
-    status: "",
+    status: "under_review",
     email: "",
     phone_number: "",
     website: "",
@@ -29,11 +29,24 @@ const RestaurantCreation = ({ isOpen, setIsOpen }) => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
+
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleCreateRestaurant = (e) => {
+    console.log(formData);
     e.preventDefault();
+    if (
+      !formData.name ||
+      !formData.status ||
+      !formData.email
+    ) {
+      return setAlert({
+        message: "Please fill in all fields!",
+        type: "error",
+        onClose: () => setAlert({ message: "", type: "", onClose: () => {} }),
+      });
+    }
     axiosInstance
       .post("/restaurants/", formData)
       .then(() => {
@@ -164,7 +177,7 @@ const RestaurantCreation = ({ isOpen, setIsOpen }) => {
                     >
                       <option value="open">Open</option>
                       <option value="closed">Closed</option>
-                      <option value="under_review">Under Review</option>
+                      <option value="under_review" selected>Under Review</option>
                     </select>
                   </div>
                   <div className="mb-4">
