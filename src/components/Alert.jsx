@@ -16,14 +16,14 @@ const Alert = ({ type, message, onClose }) => {
     if (type !== "" && message !== "") {
       const timer = setTimeout(() => {
         onClose();
-      }, 2000);
+      }, 1000);
 
       return () => clearTimeout(timer);
     }
   }, [type, message, onClose]);
 
   return (
-    <div className="flex justify-center items-center">
+    <div className="flex justify-center items-center z-50">
       {type !== "" && message !== "" && (
         <div className={`border-l-4 p-4 ${alertType[type]} rounded mb-5 w-full max-w-md`} role="alert">
           <div className="flex justify-between items-center">

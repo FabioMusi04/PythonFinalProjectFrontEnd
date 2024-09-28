@@ -7,7 +7,7 @@ const RestaurantPage = ({ id }) => {
   const [editMode, setEditMode] = useState(false);
   const [restaurant, setRestaurant] = useState({
     name: "",
-    status: "",
+    status: "under_review",
     email: "",
     phone_number: "",
     website: "",
@@ -131,6 +131,7 @@ const RestaurantPage = ({ id }) => {
                   name="name"
                   value={formData.name || ""}
                   onChange={handleChange}
+                  required
                   className="mt-1 block w-full p-2 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-gray-300"
                 />
               ) : (
@@ -141,16 +142,20 @@ const RestaurantPage = ({ id }) => {
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                status
+                Status
               </label>
               {editMode ? (
-                <input
-                  type="text"
+                <select
                   name="status"
-                  value={formData.status || ""}
+                  value={formData.status || "under_review"}
                   onChange={handleChange}
+                  required
                   className="mt-1 block w-full p-2 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-gray-300"
-                />
+                >
+                  <option value="open">Open</option>
+                  <option value="closed">Closed</option>
+                  <option value="under_review">Under Review</option>
+                </select>
               ) : (
                 <p className="mt-1 text-lg text-gray-800 dark:text-gray-300">
                   {restaurant.status}
@@ -167,6 +172,7 @@ const RestaurantPage = ({ id }) => {
                   name="email"
                   value={formData.email || ""}
                   onChange={handleChange}
+                  required
                   className="mt-1 block w-full p-2 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-gray-300"
                 />
               ) : (
@@ -239,6 +245,7 @@ const RestaurantPage = ({ id }) => {
                   name="address"
                   value={formData.address || ""}
                   onChange={handleChange}
+                  required
                   className="mt-1 block w-full p-2 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-gray-300"
                 />
               ) : (
@@ -257,6 +264,7 @@ const RestaurantPage = ({ id }) => {
                   name="city"
                   value={formData.city || ""}
                   onChange={handleChange}
+                  required
                   className="mt-1 block w-full p-2 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-gray-300"
                 />
               ) : (
@@ -275,6 +283,7 @@ const RestaurantPage = ({ id }) => {
                   name="country"
                   value={formData.country || ""}
                   onChange={handleChange}
+                  required
                   className="mt-1 block w-full p-2 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-gray-300"
                 />
               ) : (
