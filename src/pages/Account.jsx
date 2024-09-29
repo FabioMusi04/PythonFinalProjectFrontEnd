@@ -4,6 +4,8 @@ import Loading from "../components/Loading";
 import axiosIstance from "../axios/index";
 import { useNavigate } from "react-router-dom";
 import Alert from "../components/Alert";
+import PencilIcon from "../components/PencilIcon";
+import Modal from "../components/Modal";
 
 const Account = ({ user, setUser }) => {
   Account.propTypes = {
@@ -34,7 +36,12 @@ const Account = ({ user, setUser }) => {
     address: "",
     profile_picture: "",
   });
+
   const [formData, setFormData] = useState(account);
+  const [selectedAvatar, setSelectedAvatar] = useState(
+    user.profile_picture || "https://placehold.co/600x400"
+  );
+  const [modalOpen, setModalOpen] = useState(false);
 
   useEffect(() => {
     setAccount(
@@ -56,6 +63,10 @@ const Account = ({ user, setUser }) => {
   useEffect(() => {
     setFormData(account);
   }, [account]);
+  
+  useEffect(() => {
+    setFormData((prev) => ({ ...prev, profile_picture: selectedAvatar }));
+  }, [selectedAvatar]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -126,6 +137,12 @@ const Account = ({ user, setUser }) => {
 
   return (
     <div className="grow bg-gray-100 dark:bg-gray-900 items-center justify-center p-8">
+      {modalOpen && (
+        <Modal
+          updateAvatar={setSelectedAvatar}
+          closeModal={() => setModalOpen(false)}
+        />
+      )}
       <Alert
         message={alert.message}
         type={alert.type}
@@ -138,10 +155,22 @@ const Account = ({ user, setUser }) => {
           </h1>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="flex justify-center col-span-full">
-              <img
-                className="w-32 h-32 object-cover rounded-full"
-                src={account.profile_picture}
-              ></img>
+              <div className="relative">
+                <img
+                  src={selectedAvatar}
+                  alt="Avatar"
+                  className="w-[150px] h-[150px] rounded-full border-2 border-gray-400"
+                />
+                {editMode && (
+                  <button
+                  className="absolute -bottom-3 left-0 right-0 m-auto w-fit p-[.35rem] rounded-full bg-gray-800 hover:bg-gray-700 border border-gray-600 dark:border-gray-700 dark:bg-gray-700 dark:hover:bg-gray-600 text-white dark:text-gray-300 transition"
+                  title="Change photo"
+                  onClick={() => setModalOpen(true)}
+                >
+                  <PencilIcon />
+                </button>
+                )}
+              </div>
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">

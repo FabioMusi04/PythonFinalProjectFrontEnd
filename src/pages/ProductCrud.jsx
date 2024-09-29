@@ -14,6 +14,8 @@ const ProductCrud = () => {
         description: "",
         status: "available",
         discount: "",
+        visible: false,
+        image: "https://placehold.co/600x400",
     });
     const [page, setPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
@@ -65,7 +67,6 @@ const ProductCrud = () => {
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
-        console.log(name, value);
         setForm({ ...form, [name]: value });
     };
 
@@ -129,6 +130,8 @@ const ProductCrud = () => {
             description: "",
             status: "available",
             discount: "",
+            visible: false,
+            image: "https://placehold.co/600x400",
         });
         setShowDiscount(false);
     };
@@ -141,6 +144,8 @@ const ProductCrud = () => {
             description: product.description || "",
             status: product.status,
             discount: product.discount,
+            visible: product.visible,
+            image: product.image || "https://placehold.co/600x400",
         });
         setShowDiscount(!!product.discount);
     };
@@ -246,6 +251,18 @@ const ProductCrud = () => {
                             Add Discount
                         </label>
                     </div>
+                    <div className="mb-2">
+                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                        <input
+                            type="checkbox"
+                            name="visible"
+                            checked={form.visible || false}
+                            onChange={() => setForm({ ...form, visible: !form.visible })}
+                            className="mr-2"
+                        />
+                            Visible
+                        </label>
+                    </div>
                     {showDiscount && (
                         <div className="mb-2">
                             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
@@ -291,6 +308,9 @@ const ProductCrud = () => {
                                 Discount
                             </th>
                             <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider dark:text-gray-300">
+                                Visible
+                            </th>
+                            <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider dark:text-gray-300">
                                 Actions
                             </th>
                         </tr>
@@ -310,6 +330,9 @@ const ProductCrud = () => {
                                 </td>
                                 <td className="px-6 py-4 whitespace-nowrap">
                                     {product.discount ?  product.discount + " %" : "-"}
+                                </td>
+                                <td className="px-6 py-4 whitespace-nowrap">
+                                    {product.visible ? "Yes" : "No"}
                                 </td>
                                 <td className="px-6 py-4 whitespace-nowrap">
                                     <button
