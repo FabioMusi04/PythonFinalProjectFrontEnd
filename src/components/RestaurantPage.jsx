@@ -2,8 +2,11 @@ import PropTypes from "prop-types";
 import { useState, useEffect } from "react";
 import axiosInstance from "../axios";
 import Alert from "./Alert";
+import { useNavigate } from "react-router-dom";
 
 const RestaurantPage = ({ id }) => {
+  const navigate = useNavigate();
+
   const [editMode, setEditMode] = useState(false);
   const [restaurant, setRestaurant] = useState({
     name: "",
@@ -346,7 +349,7 @@ const RestaurantPage = ({ id }) => {
             )}
           </div>
           <div className="flex justify-end space-x-4 mt-5">
-            <button className="bg-green-500 text-white px-4 py-2 rounded-lg shadow-lg hover:bg-green-700 dark:bg-green-700 dark:shadow-gray-800">
+            <button onClick={() => navigate(`/productDashboard/${restaurant.id}`)} className="bg-green-500 text-white px-4 py-2 rounded-lg shadow-lg hover:bg-green-700 dark:bg-green-700 dark:shadow-gray-800">
               Handle restaurant Product
             </button>
           </div>

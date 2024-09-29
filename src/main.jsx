@@ -41,7 +41,7 @@ const App = () => {
                     }
                     />
                     <Route
-                        path="/productDashboard"
+                        path="/productDashboard/:id"
                         element={
                             <PrivateRoute user={user} roles={["owner", "admin", "user"]}>
                                 <ProductCrud />
