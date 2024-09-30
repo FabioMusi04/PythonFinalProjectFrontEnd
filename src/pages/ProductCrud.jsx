@@ -3,6 +3,8 @@ import axiosInstance from "../axios";
 import { FaEdit, FaTrash, FaArrowLeft, FaArrowRight } from "react-icons/fa";
 import { useLocation } from "react-router-dom";
 import Alert from "../components/Alert";
+import PencilIcon from "../components/PencilIcon";
+import Modal from "../components/Modal";
 
 const ProductCrud = () => {
     const location = useLocation();
@@ -27,7 +29,7 @@ const ProductCrud = () => {
     const [alert, setAlert] = useState({
         message: "",
         type: "",
-        onClose: () => {},
+        onClose: () => { },
     });
 
     const [showDiscount, setShowDiscount] = useState(false);
@@ -41,7 +43,7 @@ const ProductCrud = () => {
                     setAlert({
                         message: "Products loaded successfully",
                         type: "success",
-                        onClose: () => setAlert({ message: "", type: "", onClose: () => {} }),
+                        onClose: () => setAlert({ message: "", type: "", onClose: () => { } }),
                     });
                     setProducts(res.data.products);
                     setTotalPages(Math.ceil(res.data.total / limit));
@@ -50,7 +52,7 @@ const ProductCrud = () => {
                     setAlert({
                         message: "Failed to load products",
                         type: "error",
-                        onClose: () => setAlert({ message: "", type: "", onClose: () => {} }),
+                        onClose: () => setAlert({ message: "", type: "", onClose: () => { } }),
                     });
                     console.error(err);
                 });
@@ -85,7 +87,7 @@ const ProductCrud = () => {
                     setAlert({
                         message: "Product updated successfully",
                         type: "success",
-                        onClose: () => setAlert({ message: "", type: "", onClose: () => {} }),
+                        onClose: () => setAlert({ message: "", type: "", onClose: () => { } }),
                     });
                     setProducts(
                         products.map((product) =>
@@ -98,7 +100,7 @@ const ProductCrud = () => {
                     setAlert({
                         message: "Failed to update product",
                         type: "error",
-                        onClose: () => setAlert({ message: "", type: "", onClose: () => {} }),
+                        onClose: () => setAlert({ message: "", type: "", onClose: () => { } }),
                     });
                     console.error(err);
                 });
@@ -109,7 +111,7 @@ const ProductCrud = () => {
                     setAlert({
                         message: "Product created successfully",
                         type: "success",
-                        onClose: () => setAlert({ message: "", type: "", onClose: () => {} }),
+                        onClose: () => setAlert({ message: "", type: "", onClose: () => { } }),
                     });
                     setProducts([...products, res.data.product.new_product]);
                     console.log("Product created:", res.data);
@@ -118,7 +120,7 @@ const ProductCrud = () => {
                     setAlert({
                         message: "Failed to create product",
                         type: "error",
-                        onClose: () => setAlert({ message: "", type: "", onClose: () => {} }),
+                        onClose: () => setAlert({ message: "", type: "", onClose: () => { } }),
                     });
                     console.error(err.response.data.errors);
                 });
@@ -147,6 +149,7 @@ const ProductCrud = () => {
             visible: product.visible,
             image: product.image || "https://placehold.co/600x400",
         });
+        setSelectedAvatar(product.image || "https://placehold.co/600x400");
         setShowDiscount(!!product.discount);
     };
 
@@ -157,7 +160,7 @@ const ProductCrud = () => {
                 setAlert({
                     message: "Product deleted successfully",
                     type: "success",
-                    onClose: () => setAlert({ message: "", type: "", onClose: () => {} }),
+                    onClose: () => setAlert({ message: "", type: "", onClose: () => { } }),
                 });
                 setProducts(products.filter((product) => product.id !== id));
                 console.log("Product deleted");
@@ -166,7 +169,7 @@ const ProductCrud = () => {
                 setAlert({
                     message: "Failed to delete product",
                     type: "error",
-                    onClose: () => setAlert({ message: "", type: "", onClose: () => {} }),
+                    onClose: () => setAlert({ message: "", type: "", onClose: () => { } }),
                 });
                 console.error(err);
             });
@@ -180,12 +183,50 @@ const ProductCrud = () => {
         if (page < totalPages) setPage(page + 1);
     };
 
+    const [modalOpen, setModalOpen] = useState(false);
+    const [selectedAvatar, setSelectedAvatar] = useState(
+        "https://placehold.co/600x400"
+    );
+
+    useEffect(() => {
+        setForm({ ...form, image: selectedAvatar });
+    }, [selectedAvatar]);
+
     return (
         <div className="grow p-4 dark:bg-gray-900 dark:text-white">
+            {modalOpen && (
+                <Modal
+                    updateAvatar={setSelectedAvatar}
+                    closeModal={() => setModalOpen(false)}
+                />
+            )}
             <Alert message={alert.message} type={alert.type} onClose={alert.onClose} />
             <h1 className="text-2xl font-bold mb-4 text-center">Product CRUD</h1>
             <div className="max-w-md mx-auto">
                 <form onSubmit={handleSubmit} className="mb-4">
+                    <div className="mb-2">
+                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                            Image
+                        </label>
+                        <div className="flex justify-center col-span-full">
+
+                            <div className="relative">
+                                <img
+                                    src={selectedAvatar}
+                                    alt="Avatar"
+                                    className="w-[150px] h-[150px] rounded-full border-2 border-gray-400"
+                                />
+                                <button
+                                    className="absolute -bottom-3 left-0 right-0 m-auto w-fit p-[.35rem] rounded-full bg-gray-800 hover:bg-gray-700 border border-gray-600 dark:border-gray-700 dark:bg-gray-700 dark:hover:bg-gray-600 text-white dark:text-gray-300 transition"
+                                    title="Change photo"
+                                    onClick={(e) => { e.preventDefault(); setModalOpen(true); }}
+                                >
+                                    <PencilIcon />
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
                     <div className="mb-2">
                         <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
                             Name
@@ -253,13 +294,13 @@ const ProductCrud = () => {
                     </div>
                     <div className="mb-2">
                         <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                        <input
-                            type="checkbox"
-                            name="visible"
-                            checked={form.visible || false}
-                            onChange={() => setForm({ ...form, visible: !form.visible })}
-                            className="mr-2"
-                        />
+                            <input
+                                type="checkbox"
+                                name="visible"
+                                checked={form.visible || false}
+                                onChange={() => setForm({ ...form, visible: !form.visible })}
+                                className="mr-2"
+                            />
                             Visible
                         </label>
                     </div>
@@ -293,6 +334,9 @@ const ProductCrud = () => {
                     <thead className="bg-gray-50 dark:bg-gray-700">
                         <tr>
                             <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider dark:text-gray-300">
+                                Image
+                            </th>
+                            <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider dark:text-gray-300">
                                 Name
                             </th>
                             <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider dark:text-gray-300">
@@ -318,6 +362,13 @@ const ProductCrud = () => {
                     <tbody className="bg-white divide-y divide-gray-200 dark:bg-gray-800 dark:divide-gray-700 text-center">
                         {products?.map((product) => (
                             <tr key={product.id}>
+                                <td className="px-6 py-4 whitespace-nowrap">
+                                    <img
+                                        src={product.image || "https://placehold.co/600x400"}
+                                        alt={product.name}
+                                        className="h-10 w-10 rounded-full"
+                                    />
+                                </td>
                                 <td className="px-6 py-4 whitespace-nowrap">{product.name}</td>
                                 <td className="px-6 py-4 whitespace-nowrap">
                                     {(product.price / 100).toFixed(2)}
@@ -329,7 +380,7 @@ const ProductCrud = () => {
                                     {product.status}
                                 </td>
                                 <td className="px-6 py-4 whitespace-nowrap">
-                                    {product.discount ?  product.discount + " %" : "-"}
+                                    {product.discount ? product.discount + " %" : "-"}
                                 </td>
                                 <td className="px-6 py-4 whitespace-nowrap">
                                     {product.visible ? "Yes" : "No"}
