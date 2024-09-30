@@ -64,21 +64,32 @@ const RestaurantList = () => {
           <div
             onClick={showRestaurantPage(restaurant.id)}
             key={restaurant.id}
-            className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-md"
+            className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-md relative"
           >
-            <h2 className="text-xl font-semibold">{restaurant.name}</h2>
-            <p className="text-gray-600 dark:text-gray-400">
-              {restaurant.address}, {restaurant.city}
-            </p>
-            <p className="text-gray-600 dark:text-gray-400">
-              {restaurant.status}
-            </p>
-            <p className="text-gray-600 dark:text-gray-400">
-              {restaurant.phone} - {restaurant.webisite}
-            </p>
-            <p className="text-gray-600 dark:text-gray-400">
-              {restaurant.description}
-            </p>
+            <div
+              className="absolute inset-0 opacity-50 rounded-lg"
+              style={{
+                backgroundImage: `url(${restaurant.image || 'https://placehold.co/600x400'})`,
+                backgroundSize: 'cover',
+                backgroundPosition: 'center',
+                opacity: 0.25,
+              }}
+            ></div>
+            <div className="relative z-10">
+              <h2 className="text-xl font-semibold">{restaurant.name}</h2>
+              <p className="text-gray-600 dark:text-gray-400">
+                {restaurant.address}, {restaurant.city}
+              </p>
+              <p className="text-gray-600 dark:text-gray-400">
+                {restaurant.status}
+              </p>
+              <p className="text-gray-600 dark:text-gray-400">
+                {restaurant.phone} - {restaurant.website}
+              </p>
+              <p className="text-gray-600 dark:text-gray-400">
+                {restaurant.description}
+              </p>
+            </div>
           </div>
         ))}
       </div>

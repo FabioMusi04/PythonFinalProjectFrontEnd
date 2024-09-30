@@ -3,6 +3,8 @@ import { useState, useEffect } from "react";
 import axiosInstance from "../axios";
 import Alert from "./Alert";
 import { useNavigate } from "react-router-dom";
+import PencilIcon from "./PencilIcon";
+import Modal from "./Modal";
 
 const RestaurantPage = ({ id }) => {
   const navigate = useNavigate();
@@ -41,7 +43,7 @@ const RestaurantPage = ({ id }) => {
   const [alert, setAlert] = useState({
     type: "",
     message: "",
-    onClose: () => {},
+    onClose: () => { },
   });
 
   const handleSave = () => {
@@ -56,7 +58,7 @@ const RestaurantPage = ({ id }) => {
           type: "success",
           message: "Restaurant updated successfully",
           onClose: () => {
-            setAlert({ type: "", message: "", onClose: () => {} });
+            setAlert({ type: "", message: "", onClose: () => { } });
             setRestaurant(response.data);
             setFormData(response.data);
           },
@@ -67,7 +69,7 @@ const RestaurantPage = ({ id }) => {
           type: "error",
           message: error.response.data.detail || error.message,
           onClose: () => {
-            setAlert({ type: "", message: "", onClose: () => {} });
+            setAlert({ type: "", message: "", onClose: () => { } });
             setRestaurant(restaurant);
             setFormData(restaurant);
           },
@@ -83,7 +85,7 @@ const RestaurantPage = ({ id }) => {
           type: "success",
           message: "Restaurant deleted successfully",
           onClose: () => {
-            setAlert({ type: "", message: "", onClose: () => {} });
+            setAlert({ type: "", message: "", onClose: () => { } });
             window.location.href = "/restaurants/me";
           },
         });
@@ -93,11 +95,26 @@ const RestaurantPage = ({ id }) => {
           type: "error",
           message: error.response.data.detail || error.message,
           onClose: () => {
-            setAlert({ type: "", message: "", onClose: () => {} });
+            setAlert({ type: "", message: "", onClose: () => { } });
           },
         });
       });
   }
+
+  const [modalOpen, setModalOpen] = useState(false);
+  const [selectedAvatar, setSelectedAvatar] = useState(restaurant.image || "https://placehold.co/600x400");
+
+  useEffect(() => {
+    setFormData({ ...formData, image: selectedAvatar });
+  }, [selectedAvatar]);
+
+  useEffect(() => {
+    setSelectedAvatar(restaurant.image || "https://placehold.co/600x400");
+  }, [restaurant.image]);
+
+  useEffect(() => {
+    setSelectedAvatar(formData.image || "https://placehold.co/600x400");
+  }, [formData.image]);
 
   return (
     <>
@@ -106,6 +123,12 @@ const RestaurantPage = ({ id }) => {
         message={alert.message}
         onClose={alert.onClose}
       />
+            {modalOpen && (
+        <Modal
+          updateAvatar={setSelectedAvatar}
+          closeModal={() => setModalOpen(false)}
+        />
+      )}
 
       <div className="grow bg-gray-100 dark:bg-gray-900 flex items-center justify-center">
         <div className="bg-white dark:bg-gray-800 shadow-md rounded-lg p-8">
@@ -123,6 +146,26 @@ const RestaurantPage = ({ id }) => {
           <h1 className="text-3xl font-semibold text-gray-800 dark:text-gray-200 text-center mb-8">
             My restaurant
           </h1>
+          <div className="mb-2">
+            <div className="flex justify-center col-span-full">
+              <div className="relative">
+                <img
+                  src={selectedAvatar || "https://placehold.co/600x400"}
+                  alt="Avatar"
+                  className="w-[150px] h-[150px] rounded-full border-2 border-gray-400"
+                />
+                {editMode && (
+                  <button
+                  className="absolute -bottom-3 left-0 right-0 m-auto w-fit p-[.35rem] rounded-full bg-gray-800 hover:bg-gray-700 border border-gray-600 dark:border-gray-700 dark:bg-gray-700 dark:hover:bg-gray-600 text-white dark:text-gray-300 transition"
+                  title="Change photo"
+                  onClick={() => setModalOpen(true)}
+                >
+                  <PencilIcon />
+                </button>
+                )}
+              </div>
+            </div>
+          </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-center">
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
