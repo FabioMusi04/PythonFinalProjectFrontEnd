@@ -113,7 +113,7 @@ const ProductCrud = () => {
                         type: "success",
                         onClose: () => setAlert({ message: "", type: "", onClose: () => { } }),
                     });
-                    setProducts([...products, res.data.product.new_product]);
+                    setProducts([...products, res.data]);
                     console.log("Product created:", res.data);
                 })
                 .catch((err) => {
@@ -135,6 +135,7 @@ const ProductCrud = () => {
             visible: false,
             image: "https://placehold.co/600x400",
         });
+        setSelectedAvatar("https://placehold.co/600x400");
         setShowDiscount(false);
     };
 
