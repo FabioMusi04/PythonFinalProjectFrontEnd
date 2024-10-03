@@ -2,21 +2,15 @@ import React, { useEffect, useState } from 'react';
 import axiosInstance from '../axios';
 
 const Orders = () => {
-    const [products, setProducts] = useState([]);
-    const [categories, setCategories] = useState([
-        { id: 1, name: 'Category 1' },
-        { id: 2, name: 'Category 2' },
-        { id: 3, name: 'Category 3' },
-    ]);
+    const [categories, setCategories] = useState([]);
 
     const restaurantId = window.location.pathname.split('/')[2];
     const tableId = window.location.pathname.split('/')[4];
 
-
     return (
         <div className="flex">
             <Drawer categories={categories} />
-            <ProductList tableId={tableId} restaurantId={restaurantId} />
+            <ProductList tableId={tableId} restaurantId={restaurantId} categories={categories} setCategories={setCategories} />
         </div>
     );
 };
@@ -73,28 +67,28 @@ const Drawer = ({ categories }) => {
     );
 };
 
-const ProductList = ({ tableId, restaurantId }) => {
+const ProductList = ({ tableId, restaurantId, setCategories, categories }) => {
     const [products, setProducts] = useState([]);
     const [skip, setSkip] = useState(0);
     const [limit] = useState(10); // Adjust this number based on how many products you want to load per request
     const [loading, setLoading] = useState(false);
     const [hasMore, setHasMore] = useState(true);
+    const [order, setOrder] = useState({});
 
-    // Function to load more products using skip and limit
     const loadMoreProducts = async () => {
         if (!loading && hasMore) {
             setLoading(true);
             try {
                 const response = await axiosInstance.get(`/products/${restaurantId}`, {
-                    params: { skip, limit } // Sending skip and limit as query params
+                    /* params: { skip, limit } */
                 });
                 const newProducts = response.data.products;
 
                 if (newProducts.length === 0) {
-                    setHasMore(false); // No more products to load
+                    setHasMore(false);
                 } else {
                     setProducts((prevProducts) => [...prevProducts, ...newProducts]);
-                    setSkip((prevSkip) => prevSkip + limit); // Increment skip for the next request
+                    setSkip((prevSkip) => prevSkip + limit);
                 }
             } catch (error) {
                 console.error("Error fetching products:", error);
@@ -104,21 +98,56 @@ const ProductList = ({ tableId, restaurantId }) => {
         }
     };
 
-    // Scroll event listener for infinite scrolling
-    useEffect(() => {
-        const handleScroll = () => {
-            if (window.innerHeight + document.documentElement.scrollTop >= document.documentElement.offsetHeight - 200 && hasMore) {
-                loadMoreProducts();
-            }
-        };
-
-        window.addEventListener('scroll', handleScroll);
-        return () => window.removeEventListener('scroll', handleScroll);
-    }, [skip, hasMore, loading]);
-
     useEffect(() => {
         loadMoreProducts(); // Load the first batch of products on component mount
     }, []);
+
+    // Fetch categories
+    useEffect(() => {
+        const fetchCategories = async () => {
+            try {
+                const response = await axiosInstance.get(`/categories/${restaurantId}`);
+                setCategories(response.data);
+            } catch (error) {
+                console.error("Error fetching categories:", error);
+            }
+        };
+
+        fetchCategories();
+    }, [restaurantId]);
+
+    // Function to group products by category
+    const groupProductsByCategory = () => {
+        const groupedProducts = {};
+        products.forEach(product => {
+            if (!groupedProducts[product.category.name]) {
+                groupedProducts[product.category.name] = [];
+            }
+            groupedProducts[product.category.name].push(product);
+        });
+        return groupedProducts;
+    };
+
+    const groupedProducts = groupProductsByCategory();
+
+    const handleQuantityChange = (productId, change) => {
+        setOrder((prevOrder) => {
+            const newOrder = { ...prevOrder };
+            if (!newOrder[productId]) {
+                newOrder[productId] = 0;
+            }
+            newOrder[productId] += change;
+            if (newOrder[productId] < 0) {
+                newOrder[productId] = 0;
+            }
+            return newOrder;
+        });
+    };
+
+    const handlePlaceOrder = () => {
+        console.log("Order placed:", order);
+        // Implement order submission logic here
+    };
 
     return (
         <div className="flex-1 container mx-auto p-4 dark:bg-gray-800 dark:text-white">
@@ -127,44 +156,66 @@ const ProductList = ({ tableId, restaurantId }) => {
                 <h2 className="text-xl font-semibold">Table {tableId}</h2>
                 <p className="text-gray-700 dark:text-gray-300">Order your favorite dishes from the menu</p>
             </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                {products.length === 0 && !loading && <p className="text-center">No products available</p>}
-                {products.map(product => (
-                    <div key={product.id} className="border rounded-lg p-4 shadow-lg dark:bg-gray-700 flex">
-                        <img
-                            src={product.image || "https://placehold.co/600x400"}
-                            alt={product.name}
-                            className="w-24 h-24 object-cover mr-4 rounded-xl"
-                        />
-                        <div>
-                            <h2 className="text-xl font-semibold">{product.name}</h2>
-                            <p className="text-gray-700 dark:text-gray-300">{product.description}</p>
-                            <p className="text-gray-900 font-bold dark:text-gray-100">${product.price}</p>
-                            {product.discount && <p className="text-red-500 dark:text-red-400">Discount: {product.discount}%</p>}
-                            <p className={`mt-2 ${product.status === 'available' ? 'text-green-500 dark:text-green-400' : 'text-red-500 dark:text-red-400'}`}>
-                                {product.status.replace('_', ' ')}
-                            </p>
-                            <button className="mt-4 bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-900">
-                                Add to Order
-                            </button>
-                        </div>
+            {categories.map((category) => (
+                <div key={category.id} id={category.name} className="mb-8">
+                    <h2 className="text-2xl font-bold mb-4">{category.name}</h2>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                        {groupedProducts[category.name]?.length ? (
+                            groupedProducts[category.name].map((product) => (
+                                <div key={product.id} className="border rounded-lg p-4 shadow-lg dark:bg-gray-700 flex">
+                                    <img
+                                        src={product.image || "https://placehold.co/600x400"}
+                                        alt={product.name}
+                                        className="w-24 h-24 object-cover mr-4 rounded-xl"
+                                    />
+                                    <div>
+                                        <h2 className="text-xl font-semibold">{product.name}</h2>
+                                        <p className="text-gray-700 dark:text-gray-300">{product.description}</p>
+                                        <p className="text-gray-900 font-bold dark:text-gray-100">${product.price}</p>
+                                        {product.discount && <p className="text-red-500 dark:text-red-400">Discount: {product.discount}%</p>}
+                                        <p className={`mt-2 ${product.status === 'available' ? 'text-green-500 dark:text-green-400' : 'text-red-500 dark:text-red-400'}`}>
+                                            {product.status.replace('_', ' ')}
+                                        </p>
+                                        <div className="flex items-center mt-4">
+                                            <button
+                                                onClick={() => handleQuantityChange(product.id, -1)}
+                                                className="bg-red-500 text-white py-1 px-3 rounded hover:bg-red-700 dark:bg-red-700 dark:hover:bg-red-900"
+                                            >
+                                                -
+                                            </button>
+                                            <span className="mx-2">{order[product.id] || 0}</span>
+                                            <button
+                                                onClick={() => handleQuantityChange(product.id, 1)}
+                                                className="bg-blue-500 text-white py-1 px-3 rounded hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-900"
+                                            >
+                                                +
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            ))
+                        ) : (
+                            <p className="text-center col-span-full">No products available in this category</p>
+                        )}
                     </div>
-                ))}
-            </div>
-
-            {/* Show loading spinner or message when loading */}
+                </div>
+            ))}
             {loading && (
                 <div className="text-center mt-4">
                     <p>Loading more products...</p>
                 </div>
             )}
-
-            {/* Show message if there are no more products */}
             {!hasMore && (
                 <div className="text-center mt-4">
                     <p>No more products to show.</p>
                 </div>
             )}
+            <button
+                onClick={handlePlaceOrder}
+                className="fixed bottom-4 right-4 bg-green-500 text-white py-2 px-4 rounded-full shadow-lg hover:bg-green-700 dark:bg-green-700 dark:hover:bg-green-900"
+            >
+                Place Order
+            </button>
         </div>
     );
 };
