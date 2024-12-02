@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import axiosInstance from '../axios';
+import PropTypes from 'prop-types';
 
 const Orders = () => {
     const [categories, setCategories] = useState([]);
@@ -14,7 +15,6 @@ const Orders = () => {
         </div>
     );
 };
-
 export default Orders;
 
 const Drawer = ({ categories }) => {
@@ -67,6 +67,12 @@ const Drawer = ({ categories }) => {
     );
 };
 
+Drawer.propTypes = {
+    categories: PropTypes.array.isRequired,
+};
+
+
+
 const ProductList = ({ tableId, restaurantId, setCategories, categories }) => {
     const [products, setProducts] = useState([]);
     const [skip, setSkip] = useState(0);
@@ -75,7 +81,7 @@ const ProductList = ({ tableId, restaurantId, setCategories, categories }) => {
     const [hasMore, setHasMore] = useState(true);
     const [order, setOrder] = useState({});
 
-    const loadMoreProducts = async () => {
+    const loadMoreProducts = useCallback(async () => {
         if (!loading && hasMore) {
             setLoading(true);
             try {
@@ -96,7 +102,7 @@ const ProductList = ({ tableId, restaurantId, setCategories, categories }) => {
                 setLoading(false);
             }
         }
-    };
+    }, [loading, hasMore, restaurantId, limit]);
 
     useEffect(() => {
         loadMoreProducts(); // Load the first batch of products on component mount
@@ -114,7 +120,7 @@ const ProductList = ({ tableId, restaurantId, setCategories, categories }) => {
         };
 
         fetchCategories();
-    }, [restaurantId]);
+    }, [restaurantId, setCategories]);
 
     // Function to group products by category
     const groupProductsByCategory = () => {
@@ -150,7 +156,7 @@ const ProductList = ({ tableId, restaurantId, setCategories, categories }) => {
     };
 
     return (
-        <div className="flex-1 container mx-auto p-4 dark:bg-gray-800 dark:text-white">
+        <div className="p-4 dark:bg-gray-800 dark:text-white">
             <h1 className="text-2xl font-bold mb-4">Order Your Favorite Dishes</h1>
             <div className="border rounded-lg p-4 shadow-lg mb-3 text-center dark:bg-gray-700">
                 <h2 className="text-xl font-semibold">Table {tableId}</h2>
@@ -218,4 +224,10 @@ const ProductList = ({ tableId, restaurantId, setCategories, categories }) => {
             </button>
         </div>
     );
+};
+ProductList.propTypes = {
+    tableId: PropTypes.string.isRequired,
+    restaurantId: PropTypes.string.isRequired,
+    setCategories: PropTypes.func.isRequired,
+    categories: PropTypes.array.isRequired,
 };
